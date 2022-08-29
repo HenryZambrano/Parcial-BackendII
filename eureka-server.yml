@@ -6,18 +6,8 @@
         register-with-eureka: false
         fetch-registry: false
 
-
     management:
       endpoints:
         web:
           exposure:
             include: '*'
-      info:
-        env:
-          enabled: true
-
-    info:
-      app:
-        name: eureka-server
-        description: Info del servidor de Eureka
-        version: 1.0.0

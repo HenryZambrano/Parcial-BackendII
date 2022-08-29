@@ -13,17 +13,17 @@
         prefer-ip-address: true
 
     spring:
-        cloud:
-          gateway:
-           routes:
-               - id: movie-service
-                 uri: http://localhost:8001
+      cloud:
+        gateway:
+         routes:
+             - id: movie-service
+                uri: http://localhost:8001
+                predicates:
+                 - Path=/movie/ **
+             - id: catalog-service
+               uri: http://localhost:8002
                  predicates:
-                   - Path=/movie/ **
-               - id: catalog-service
-                 uri: http://localhost:8002
-                  predicates:
-                    - Path=/catalog/**
+                   - Path=/catalog/**
 
 
 
