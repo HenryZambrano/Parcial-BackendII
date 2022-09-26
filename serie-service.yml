@@ -1,24 +1,16 @@
 spring:
   application:
-    name: movie-service
+    name: serie-service
   rabbitmq:
     username: guest
     password: guest
     host: rabbitmq
     port: 5672
-  datasource:
-    driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://db-mysql-movie:3306/movie_database
-    username: root
-    password: root
-  sql:
-    init:
-      mode: always
-      dataLocations: classpath:/movie-service.sql
-  jpa:
-    deferDatasourceInitialization: true
-    hibernate:
-      ddlAuto: create-drop
+  data:
+    mongodb:
+      host: db-mongo-serie
+      port: 27018
+      database: serie_database
   security:
     oauth2:
       resourceserver:
@@ -31,11 +23,12 @@ spring:
     enabled: true
 
 queue:
-  movie:
-    name: MovieQueue
+  serie:
+    name: SerieQueue
+
 
 server:
-  port: 8081
+  port: 8082
 
 logging:
   level:

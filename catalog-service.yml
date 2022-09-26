@@ -1,40 +1,80 @@
-    server:
-      port: 8002
-      servlet:
-        context-path: /catalog/
+spring:
+  application:
+    name: catalog-service
+  rabbitmq:
+    username: guest
+    password: guest
+    host: rabbitmq
+    port: 5672
+  data:
+    mongodb:
+      host: db-mongo-catalog
+      port: 27017
+      database: catalog_database
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://accounts.google.com
+  mvc:
+    log-request-details: true
+  zipkin:
+    base-url: http://zipkin:9411/
+    enabled: true
 
-    spring:
-      datasource:
-        url: jdbc:h2:mem:testdb
-        username: sa
-        password: sa
-    h2:
-      console:
-        enabled: true
-        path: /h2-console
+queue:
+  movie:
+    name: MovieQueue
+  serie:
+    name: SerieQueue
 
 
-        message: hello from catalog-service
+server:
+  port: 8091
 
-    management:
-      endpoints:
-        web:
-          exposure:
-            include: '*'
-      info:
-        env:
-          enabled: true
+logging:
+  level:
+    org.springframework.security: DEBUG
 
-    info:
-      app:
-        name: catalog-service
-        description: Info del servicio Catalog
-        version: 1.0.0
+eureka:
+  client:
+    fetchRegistry: true
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: http://eureka-service:8761/eureka
+    instance:
+      preferIpAddress: true
 
-    eureka:
-      client:
-        service-url:
-          defaultZone: http://localhost:8761/eureka/
-      instance:
-        hostname: localhost
-        instance-id: ${spring.application.name}:${spring.application.instance-id:${random.value}}
+resilience4j:
+  circuitbreaker:
+    instances:
+      movies:
+        allowHealthIndicatorToFail: false
+        registerHealthIndicator: true
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 15000
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+      series:
+        allowHealthIndicatorToFail: false
+        registerHealthIndicator: true
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 15000
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+  retry:
+    instances:
+      movies:
+        waitDuration: 1000
+        maxAttempts: 3
+        retryExceptions:
+          - feign.FeignException$InternalServerError
+      series:
+        waitDuration: 1000
+        maxAttempts: 3
+        retryExceptions:
+          - feign.FeignException$InternalServerError
